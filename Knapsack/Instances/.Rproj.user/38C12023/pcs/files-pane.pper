@@ -1,0 +1,9 @@
+{
+    "path" : "~/src/Knapsack/Instances",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

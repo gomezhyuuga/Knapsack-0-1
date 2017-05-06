@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "20, 50\n5, 96.000\n4, 86.000\n2, 31.000\n3, 84.000\n13, 118.000\n13, 128.000\n15, 76.000\n2, 62.000\n5, 98.000\n3, 42.000\n12, 122.000\n14, 3.000\n15, 29.000\n4, 44.000\n14, 60.000\n11, 3.000\n15, 52.000\n12, 105.000\n14, 1.000\n16, 107.000",
+    "created" : 1494035092260.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1691583935",
+    "id" : "FF4825FB",
+    "lastKnownWriteTime" : 1489821076,
+    "last_content_update" : 1489821076,
+    "path" : "~/src/Knapsack/Instances/GA-DEFAULT_20_000.kp",
+    "project_path" : "GA-DEFAULT_20_000.kp",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}
