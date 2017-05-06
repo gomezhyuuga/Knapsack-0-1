@@ -70,6 +70,7 @@ public class ConstructiveSolver implements FeatureManager {
         ConstructiveHeuristic heuristic;
         Item item;
         heuristic = null;
+//        solve(); // USING DYNAMIC PROGRAMMING
         try {
             heuristic = getHeuristic(selector.getHeuristic(this));
             timer.start(-1);
@@ -248,6 +249,34 @@ public class ConstructiveSolver implements FeatureManager {
                     x[i++] = item.getProfit();
                 }
                 return Statistical.stdev(x) / Statistical.max(x);
+            case "LQ_PROFIT":
+                i = 0;
+                x = new double[items.size()];
+                for (Item item : items) {
+                    x[i++] = item.getProfit();
+                }
+                return Statistical.lowerQuartile(x);
+            case "UQ_PROFIT":
+                i = 0;
+                x = new double[items.size()];
+                for (Item item : items) {
+                    x[i++] = item.getProfit();
+                }
+                return Statistical.upperQuartile(x);
+            case "LQ_WEIGHT":
+                i = 0;
+                x = new double[items.size()];
+                for (Item item : items) {
+                    x[i++] = item.getWeight();
+                }
+                return Statistical.lowerQuartile(x);
+            case "UQ_WEIGHT":
+                i = 0;
+                x = new double[items.size()];
+                for (Item item : items) {
+                    x[i++] = item.getWeight();
+                }
+                return Statistical.upperQuartile(x);
             case "NORM_CORRELATION":
                 i = 0;
                 x = new double[items.size()];
