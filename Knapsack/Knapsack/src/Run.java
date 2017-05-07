@@ -19,86 +19,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 public class Run {
-
-    public enum Method {
-        DEFAULT,
-        MAX_PROFIT,
-        MAX_PROFIT_PER_WEIGHT_UNIT,
-        MIN_WEIGHT,
-        SIMPLE_HYPER,
-        HYUUGA_HYPER
-    }
-
-    public static class WinnerTable {
-
-        private final Map<Method, Integer> winners;
-        private final int n;
-        private ArrayList<NGKnapsack.Rule> rules;
-
-        public WinnerTable(int n) {
-            this.n = n;
-            winners = new HashMap<>();
-            Method[] vals = Method.values();
-            for (Method val : vals) {
-                winners.put(val, 0);
-            }
-            this.rules = new ArrayList<>();
-        }
-
-        public void setWinner(Method m) {
-            int times = winners.get(m);
-            winners.put(m, times + 1);
-        }
-
-        public void addRules(List<NGKnapsack.Rule> rules) {
-            this.rules.addAll(rules);
-        }
-
-        public double getScore(Method m) {
-            return getWins(m) * 100.0 / this.n;
-        }
-
-        public int getWins(Method m) {
-            return this.winners.get(m);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder s = new StringBuilder();
-            String ruler = String.join("", Collections.nCopies(45, "=")) + "\n";
-            DecimalFormat decim = new DecimalFormat("00.000");
-            s.append(ruler);
-            s.append(String.format("%30s\n", "TABLE OF RESULTS"));
-            s.append(ruler);
-            for (Method m : Method.values()) {
-                s.append(String.format("%45s", String.format("%s: (%02d/%d) %s%% \n",
-                        m.toString(),
-                        getWins(m),
-                        this.n,
-                        decim.format(getScore(m)))));
-            }
-            s.append(ruler);
-            s.append(String.format("%28s\n", "RULES USED"));
-            s.append(ruler);
-            Map<String, List<NGKnapsack.Rule>> rr = rules.stream().collect(Collectors.groupingBy((t) -> {
-                return t.name();
-            }));
-            int size = rules.size();
-            for (Map.Entry<String, List<NGKnapsack.Rule>> entry : rr.entrySet()) {
-                String key = entry.getKey();
-                List<NGKnapsack.Rule> value = entry.getValue();
-                int times = value.size();
-                s.append(String.format("%10s: (%03d/%d) %s%%\n",
-                        key,
-                        times,
-                        size,
-                        decim.format(times * 100.0 / size)));
-            }
-            s.append(ruler);
-            return s.toString();
-        }
-    }
-
+    
     public static void main(String[] args) {
         String[] features, heuristics;
         int START = 0;
@@ -178,7 +99,6 @@ public class Run {
             NGKnapsack kk = new NGKnapsack(my_items, defProblem.getCapacity());
             kk.solve();
             profit = kk.getTotalProfit();
-//            System.out.println("HYUUGA: " + profit);
             results.put(Method.HYUUGA_HYPER, profit);
 
             // Get Winner
@@ -193,9 +113,86 @@ public class Run {
         }
 
         System.out.println(winners);
-        System.out.println(winners.rules.size());
     }
 
+    public enum Method {
+        DEFAULT,
+        MAX_PROFIT,
+        MAX_PROFIT_PER_WEIGHT_UNIT,
+        MIN_WEIGHT,
+        SIMPLE_HYPER,
+        HYUUGA_HYPER
+    }
+
+    public static class WinnerTable {
+
+        private final Map<Method, Integer> winners;
+        private final int n;
+        private ArrayList<NGKnapsack.Rule> rules;
+
+        public WinnerTable(int n) {
+            this.n = n;
+            winners = new HashMap<>();
+            Method[] vals = Method.values();
+            for (Method val : vals) {
+                winners.put(val, 0);
+            }
+            this.rules = new ArrayList<>();
+        }
+
+        public void setWinner(Method m) {
+            int times = winners.get(m);
+            winners.put(m, times + 1);
+        }
+
+        public void addRules(List<NGKnapsack.Rule> rules) {
+            this.rules.addAll(rules);
+        }
+
+        public double getScore(Method m) {
+            return getWins(m) * 100.0 / this.n;
+        }
+
+        public int getWins(Method m) {
+            return this.winners.get(m);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            String ruler = String.join("", Collections.nCopies(45, "=")) + "\n";
+            DecimalFormat decim = new DecimalFormat("00.000");
+            s.append(ruler);
+            s.append(String.format("%30s\n", "TABLE OF RESULTS"));
+            s.append(ruler);
+            for (Method m : Method.values()) {
+                s.append(String.format("%45s", String.format("%s: (%02d/%d) %s%% \n",
+                        m.toString(),
+                        getWins(m),
+                        this.n,
+                        decim.format(getScore(m)))));
+            }
+            s.append(ruler);
+            s.append(String.format("%28s\n", "RULES USED"));
+            s.append(ruler);
+            Map<String, List<NGKnapsack.Rule>> rr = rules.stream().collect(Collectors.groupingBy((t) -> {
+                return t.name();
+            }));
+            int size = rules.size();
+            for (Map.Entry<String, List<NGKnapsack.Rule>> entry : rr.entrySet()) {
+                String key = entry.getKey();
+                List<NGKnapsack.Rule> value = entry.getValue();
+                int times = value.size();
+                s.append(String.format("%10s: (%03d/%d) %s%%\n",
+                        key,
+                        times,
+                        size,
+                        decim.format(times * 100.0 / size)));
+            }
+            s.append(ruler);
+            return s.toString();
+        }
+    }
     public static double use(KnapsackProblem problem, Heuristic heuristic) {
         return new ConstructiveSolver(problem)
                 .solve(new ConstructiveHeuristic(heuristic))
@@ -327,15 +324,15 @@ public class Run {
                 }
 
                 Optional<NGItem> selectedItem;
-                double mean_weight = getWeightMean();
+//                double mean_weight = getWeightMean();
                 double mean_profit = getProfitMean();
-                double median_profit = getProfitMedian();
-                double std_weight = getWeightSTD();
+//                double median_profit = getProfitMedian();
+//                double std_weight = getWeightSTD();
                 double std_profit = getProfitSTD();
                 double upperQ_weight = getWeightUpperQ();
-                double upperQ_profit = getProfitUpperQ();
+//                double upperQ_profit = getProfitUpperQ();
                 double lowerQ_weight = getWeightLowerQ();
-                double lowerQ_profit = getProfitLowerQ();
+//                double lowerQ_profit = getProfitLowerQ();
                 
                 // RULE 2
                 Optional<NGItem> i1 = this.items.stream()
