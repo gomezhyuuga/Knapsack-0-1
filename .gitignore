@@ -3,3 +3,4 @@ build/
 test/
 tmp/
 .Rproj.user
+.R*

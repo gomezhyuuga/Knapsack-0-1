@@ -6,6 +6,7 @@ import KP.Solvers.Constructive.Heuristics.ConstructiveHeuristic;
 import KP.Solvers.Constructive.Heuristics.ConstructiveHeuristic.Heuristic;
 import KP.Solvers.HyperHeuristic.SampleHyperHeuristic;
 import Utils.Statistical;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -31,22 +32,15 @@ public class Run {
 
     public static class WinnerTable {
 
-        private Map<Method, Integer> winners;
-        private int n;
+        private final Map<Method, Integer> winners;
+        private final int n;
 
         public WinnerTable(int n) {
             this.n = n;
             winners = new HashMap<>();
-            Method[] vals = {
-                Method.DEFAULT,
-                Method.MAX_PROFIT,
-                Method.MAX_PROFIT_PER_WEIGHT_UNIT,
-                Method.MIN_WEIGHT,
-                Method.SIMPLE_HYPER,
-                Method.HYUUGA_HYPER
-            };
-            for (int i = 0; i < vals.length; i++) {
-                winners.put(vals[i], 0);
+            Method[] vals = Method.values();
+            for (Method val : vals) {
+                winners.put(val, 0);
             }
         }
 
@@ -55,9 +49,27 @@ public class Run {
             winners.put(m, times + 1);
         }
 
+        public double getScore(Method m) {
+            return getWins(m) * 100.0 / this.n;
+        }
+
+        public int getWins(Method m) {
+            return this.winners.get(m);
+        }
+
         @Override
         public String toString() {
-            return this.winners.toString();
+            StringBuilder s = new StringBuilder();
+            DecimalFormat decim = new DecimalFormat("00.00");
+            s.append(String.format("%35s\n", "*** TABLE OF RESULTS ***"));
+            for (Method m : Method.values()) {
+                s.append(String.format("%45s", String.format("%s: (%02d/%d) %s%% \n",
+                        m.toString(),
+                        getWins(m),
+                        this.n,
+                        decim.format(getScore(m)))));
+            }
+            return s.toString();
         }
     }
 
@@ -69,30 +81,26 @@ public class Run {
         ConstructiveSolver solver;
         SampleHyperHeuristic hh;
 
-        WinnerTable winners = new WinnerTable(TEST);
-        System.out.println(winners);
         ArrayList<KnapsackProblem> problems = new ArrayList();
 
-        for (int index = 0; index < TEST; index++){
+        for (int index = 0; index < TEST; index++) {
             String instanceName = String.format("_20_%03d.kp", index);
 
             KnapsackProblem defProblem = new KnapsackProblem("../Instances/GA-DEFAULT" + instanceName);
             KnapsackProblem maxProblem = new KnapsackProblem("../Instances/GA-MAXPROFIT" + instanceName);
             KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/GA-MAXPROFITWEIGHT" + instanceName);
             KnapsackProblem minProblem = new KnapsackProblem("../Instances/GA-MINWEIGHT" + instanceName);
-            
+
             problems.add(defProblem);
             problems.add(maxProblem);
             problems.add(maxPWProblem);
             problems.add(minProblem);
         }
-        
-        System.out.println(problems.size());
+        WinnerTable winners = new WinnerTable(problems.size());
 
-        for (KnapsackProblem p: problems) {
+        for (KnapsackProblem p : problems) {
             Map<Method, Double> results = new HashMap<>();
 
-            
             KnapsackProblem defProblem = p;
             features = new String[]{
                 "NORM_MEAN_WEIGHT",
@@ -117,32 +125,32 @@ public class Run {
 
             profit = use(defProblem, Heuristic.DEFAULT);
             results.put(Method.DEFAULT, profit);
-            System.out.println("Profit with default: " + profit);
+//            System.out.println("Profit with default: " + profit);
 
             profit = use(defProblem, Heuristic.MIN_WEIGHT);
             results.put(Method.MIN_WEIGHT, profit);
-            System.out.println("Profit with min-weight: " + profit);
+//            System.out.println("Profit with min-weight: " + profit);
 
             profit = use(defProblem, Heuristic.MAX_PROFIT);
             results.put(Method.MAX_PROFIT, profit);
-            System.out.println("Profit with max-profit: " + profit);
+//            System.out.println("Profit with max-profit: " + profit);
 
             profit = use(defProblem, Heuristic.MAX_PROFIT_PER_WEIGHT_UNIT);
             results.put(Method.MAX_PROFIT_PER_WEIGHT_UNIT, profit);
-            System.out.println("Profit with max-profit/weight: " + profit);
+//            System.out.println("Profit with max-profit/weight: " + profit);
 
             hh = new SampleHyperHeuristic(features, heuristics);
             solver = new ConstructiveSolver(defProblem);
             profit = solver.solve(hh).getProfit();
             results.put(Method.SIMPLE_HYPER, profit);
-            System.out.println("Profit with hyper-heuristic: " + profit);
+//            System.out.println("Profit with hyper-heuristic: " + profit);
 
             List<Item> items = Arrays.stream(defProblem.getItems()).collect(Collectors.toList());
             List<NGKnapsack.NGItem> my_items = items.stream().map(i -> new NGKnapsack.NGItem(i.getProfit(), i.getWeight())).collect(Collectors.toList());
             NGKnapsack kk = new NGKnapsack(my_items, defProblem.getCapacity());
             kk.solve();
             profit = kk.getTotalProfit();
-            System.out.println("HYUUGA: " + profit);
+//            System.out.println("HYUUGA: " + profit);
             results.put(Method.HYUUGA_HYPER, profit);
 
             // Get Winner
@@ -154,9 +162,8 @@ public class Run {
                 }
             });
         }
+
         System.out.println(winners);
-        
-        
     }
 
     public static double use(KnapsackProblem problem, Heuristic heuristic) {
