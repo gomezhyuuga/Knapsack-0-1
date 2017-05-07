@@ -64,32 +64,36 @@ public class Run {
     public static void main(String[] args) {
 
         String[] features, heuristics;
-        int TEST = 20;
+        int TEST = 18;
         KnapsackProblem problem;
         ConstructiveSolver solver;
         SampleHyperHeuristic hh;
 
         WinnerTable winners = new WinnerTable(TEST);
         System.out.println(winners);
+        ArrayList<KnapsackProblem> problems = new ArrayList();
 
-//        Method[] types = Method.values();
-//        for (int i = 0; i < types.length; i++) {
-//
-//        }
-
-        for (int index = 0; index < TEST; index++) {
-            Map<Method, Double> results = new HashMap<>();
-
+        for (int index = 0; index < TEST; index++){
             String instanceName = String.format("_20_%03d.kp", index);
-            System.out.println("TESTING WITH INSTANCE: " + instanceName);
+
             KnapsackProblem defProblem = new KnapsackProblem("../Instances/GA-DEFAULT" + instanceName);
             KnapsackProblem maxProblem = new KnapsackProblem("../Instances/GA-MAXPROFIT" + instanceName);
             KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/GA-MAXPROFITWEIGHT" + instanceName);
             KnapsackProblem minProblem = new KnapsackProblem("../Instances/GA-MINWEIGHT" + instanceName);
-//            defProblem = maxPWProblem;
-//            defProblem = maxProblem;
-//            defProblem = minProblem;
+            
+            problems.add(defProblem);
+            problems.add(maxProblem);
+            problems.add(maxPWProblem);
+            problems.add(minProblem);
+        }
+        
+        System.out.println(problems.size());
 
+        for (KnapsackProblem p: problems) {
+            Map<Method, Double> results = new HashMap<>();
+
+            
+            KnapsackProblem defProblem = p;
             features = new String[]{
                 "NORM_MEAN_WEIGHT",
                 "NORM_MEDIAN_WEIGHT",
@@ -144,13 +148,15 @@ public class Run {
             // Get Winner
             // If there is a tie, then all get incremented
             Optional<Double> winner = results.values().stream().max(Double::compare);
-            results.forEach((m, p) -> {
-                if (p.equals(winner.get())) {
+            results.forEach((m, p2) -> {
+                if (p2.equals(winner.get())) {
                     winners.setWinner(m);
                 }
             });
         }
         System.out.println(winners);
+        
+        
     }
 
     public static double use(KnapsackProblem problem, Heuristic heuristic) {
