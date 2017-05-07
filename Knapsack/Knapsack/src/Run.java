@@ -341,11 +341,8 @@ public class Run {
                         .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
                         .max(NGKnapsack::maxProfitWeight);
                 if (i1.isPresent() && i2.isPresent()) {
-                    System.out.println("EEENETERERE");
-                    this.items.stream().forEach(System.out::println);
                     NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
                     packItem(ii);
-                    System.out.println("SELECTION: " + ii);
                     rules.add(Rule.RULE2);
                     continue;
                 }
@@ -361,12 +358,6 @@ public class Run {
                         .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
                         .collect(Collectors.toList());
                 selectedItem = tmp.stream().max(NGKnapsack::maxProfitWeight);
-//                tmp.stream().forEach(System.out::println);
-//                System.out.println("--- COUNT: " + tmp.size() + " SELECTED " + selectedItem);
-//                List<NGItem> others = this.items.stream().filter(i -> !tmp.contains(i)).collect(Collectors.toList());
-//                System.out.println("OTHER ITEMS: ");
-//                others.forEach(System.out::println);
-//                System.out.println("----");
 
                 if (selectedItem.isPresent()) {
                     packItem(selectedItem.get());
@@ -375,13 +366,12 @@ public class Run {
                 }
                 
                 System.out.println("----");
-
                 System.out.println("CAN'T CHOOSE");
                 this.items.stream().forEach(System.out::println);
+                System.out.println("----");
 
                 NGItem iToPack = this.items.stream().max(NGKnapsack::maxProfit).get();
                 // Default: MAX PROFIT
-//                System.out.println("CANT FIND RULE");
                 packItem(iToPack);
                 rules.add(Rule.MAXPROFIT);
             }
