@@ -259,8 +259,9 @@ public class Run {
             this.items.remove(item);
         }
 
-        public void packItem(NGItem item) {
+        public void packItem(NGItem item, Rule rule) {
             this.packedItems.add(item);
+            this.rules.add(rule);
             this.items.remove(item);
             this.capacity -= item.getWeight();
         }
@@ -283,6 +284,9 @@ public class Run {
 
         public double getProfitMean() {
             return Statistical.mean(getValues(NGItem::getProfit));
+        }
+        public double getProfitMedian() {
+            return Statistical.median(getValues(NGItem::getProfit));
         }
 
         public double getWeightMean() {
@@ -325,6 +329,7 @@ public class Run {
                 Optional<NGItem> selectedItem;
                 double mean_weight = getWeightMean();
                 double mean_profit = getProfitMean();
+                double median_profit = getProfitMedian();
                 double std_weight = getWeightSTD();
                 double std_profit = getProfitSTD();
                 double upperQ_weight = getWeightUpperQ();
@@ -332,18 +337,16 @@ public class Run {
                 double lowerQ_weight = getWeightLowerQ();
                 double lowerQ_profit = getProfitLowerQ();
                 
-                // There is no item that matches RULE 1
                 // RULE 2
                 Optional<NGItem> i1 = this.items.stream()
                         .filter(NGKnapsack.lowWeight(lowerQ_weight))
-                        .max(NGKnapsack::maxProfitWeight);
+                        .max(NGKnapsack::maxProfit);
                 Optional<NGItem> i2 = this.items.stream()
                         .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
                         .max(NGKnapsack::maxProfitWeight);
                 if (i1.isPresent() && i2.isPresent()) {
                     NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
-                    packItem(ii);
-                    rules.add(Rule.RULE2);
+                    packItem(ii, Rule.RULE1);
                     continue;
                 }
 
@@ -352,28 +355,19 @@ public class Run {
                     5. Si el valor es alto (mayor STD) y su peso se encuentra dentro de la (STD), agregar
                         => IF W >= STD_PROFIT && LOWER_Q <= W <= UPPER_Q, GRAB MAXPROFIT_WEIGHT
                  */
-                List<NGItem> tmp;
-                tmp = this.items.stream()
-                        .filter(NGKnapsack.highValue(std_profit))
+                selectedItem = this.items.stream()
+                        .filter(NGKnapsack.highValue(mean_profit + std_profit))
                         .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
-                        .collect(Collectors.toList());
-                selectedItem = tmp.stream().max(NGKnapsack::maxProfitWeight);
+                        .max(NGKnapsack::maxProfitWeight);
 
                 if (selectedItem.isPresent()) {
-                    packItem(selectedItem.get());
-                    rules.add(Rule.RULE1);
+                    packItem(selectedItem.get(), Rule.RULE2);
                     continue;
                 }
                 
-                System.out.println("----");
-                System.out.println("CAN'T CHOOSE");
-                this.items.stream().forEach(System.out::println);
-                System.out.println("----");
-
                 NGItem iToPack = this.items.stream().max(NGKnapsack::maxProfit).get();
                 // Default: MAX PROFIT
-                packItem(iToPack);
-                rules.add(Rule.MAXPROFIT);
+                packItem(iToPack, Rule.MAXPROFIT);
             }
         }
 
@@ -392,7 +386,8 @@ public class Run {
         }
 
         /**
-         * Equals to: .filter(i -> lowerQ_weight <= i.getWeight())
+         * Equals to:
+         * .filter(i -> lowerQ_weight <= i.getWeight())
          * .filter(i -> i.getWeight() <= upperQ_weight) @para
          *
          *
