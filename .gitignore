@@ -4,3 +4,4 @@ test/
 tmp/
 .Rproj.user
 .R*
+dist/

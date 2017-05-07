@@ -9,7 +9,7 @@ import Utils.Statistical;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Run {
 
@@ -34,6 +33,7 @@ public class Run {
 
         private final Map<Method, Integer> winners;
         private final int n;
+        private ArrayList<NGKnapsack.Rule> rules;
 
         public WinnerTable(int n) {
             this.n = n;
@@ -42,11 +42,16 @@ public class Run {
             for (Method val : vals) {
                 winners.put(val, 0);
             }
+            this.rules = new ArrayList<>();
         }
 
         public void setWinner(Method m) {
             int times = winners.get(m);
             winners.put(m, times + 1);
+        }
+
+        public void addRules(List<NGKnapsack.Rule> rules) {
+            this.rules.addAll(rules);
         }
 
         public double getScore(Method m) {
@@ -60,8 +65,11 @@ public class Run {
         @Override
         public String toString() {
             StringBuilder s = new StringBuilder();
-            DecimalFormat decim = new DecimalFormat("00.00");
-            s.append(String.format("%35s\n", "*** TABLE OF RESULTS ***"));
+            String ruler = String.join("", Collections.nCopies(45, "=")) + "\n";
+            DecimalFormat decim = new DecimalFormat("00.000");
+            s.append(ruler);
+            s.append(String.format("%30s\n", "TABLE OF RESULTS"));
+            s.append(ruler);
             for (Method m : Method.values()) {
                 s.append(String.format("%45s", String.format("%s: (%02d/%d) %s%% \n",
                         m.toString(),
@@ -69,13 +77,31 @@ public class Run {
                         this.n,
                         decim.format(getScore(m)))));
             }
+            s.append(ruler);
+            s.append(String.format("%28s\n", "RULES USED"));
+            s.append(ruler);
+            Map<String, List<NGKnapsack.Rule>> rr = rules.stream().collect(Collectors.groupingBy((t) -> {
+                return t.name();
+            }));
+            int size = rules.size();
+            for (Map.Entry<String, List<NGKnapsack.Rule>> entry : rr.entrySet()) {
+                String key = entry.getKey();
+                List<NGKnapsack.Rule> value = entry.getValue();
+                int times = value.size();
+                s.append(String.format("%10s: (%03d/%d) %s%%\n",
+                        key,
+                        times,
+                        size,
+                        decim.format(times * 100.0 / size)));
+            }
+            s.append(ruler);
             return s.toString();
         }
     }
 
     public static void main(String[] args) {
-
         String[] features, heuristics;
+        int START = 0;
         int TEST = 18;
         KnapsackProblem problem;
         ConstructiveSolver solver;
@@ -83,7 +109,7 @@ public class Run {
 
         ArrayList<KnapsackProblem> problems = new ArrayList();
 
-        for (int index = 0; index < TEST; index++) {
+        for (int index = START; index < TEST; index++) {
             String instanceName = String.format("_20_%03d.kp", index);
 
             KnapsackProblem defProblem = new KnapsackProblem("../Instances/GA-DEFAULT" + instanceName);
@@ -97,6 +123,8 @@ public class Run {
             problems.add(minProblem);
         }
         WinnerTable winners = new WinnerTable(problems.size());
+
+        List<NGKnapsack.Rule> rules = new ArrayList<>();
 
         for (KnapsackProblem p : problems) {
             Map<Method, Double> results = new HashMap<>();
@@ -161,9 +189,11 @@ public class Run {
                     winners.setWinner(m);
                 }
             });
+            winners.addRules(kk.getRules());
         }
 
         System.out.println(winners);
+        System.out.println(winners.rules.size());
     }
 
     public static double use(KnapsackProblem problem, Heuristic heuristic) {
@@ -192,16 +222,34 @@ public class Run {
                 return this.weight;
             }
 
+            public double getRatio() {
+                return getProfit() / getWeight();
+            }
+
+            @Override
             public String toString() {
                 return "(W " + weight + ", P " + profit + ")";
             }
+
+            public static NGItem maxProfit(NGItem i, NGItem j) {
+                return (i.getProfit() > j.getProfit()) ? i : j;
+            }
+        }
+
+        public enum Rule {
+            REMOVE,
+            RULE1,
+            RULE2,
+            MAXPROFIT
         }
 
         public double capacity = 0.0;
         public List<NGItem> items;
         public List<NGItem> packedItems;
+        public List<Rule> rules;
 
         public NGKnapsack(List<NGItem> items, double capacity) {
+            this.rules = new ArrayList<>();
             this.capacity = capacity;
             this.items = items;
             this.packedItems = new ArrayList<>();
@@ -219,6 +267,10 @@ public class Run {
 
         public double[] getValues(ToDoubleFunction<NGItem> fn) {
             return this.items.stream().mapToDouble(fn).toArray();
+        }
+
+        public List<Rule> getRules() {
+            return this.rules;
         }
 
         public double getWeightSTD() {
@@ -261,7 +313,11 @@ public class Run {
             int count = 0;
             while (!items.isEmpty()) {
                 // Remove items that doesn't fit
+                int size = this.items.size();
                 this.items.removeIf(overweight(this.capacity));
+                if (this.items.size() != size) {
+                    rules.add(Rule.REMOVE);
+                }
                 if (this.items.isEmpty()) {
                     break;
                 }
@@ -296,23 +352,36 @@ public class Run {
 
                 if (selectedItem.isPresent()) {
                     packItem(selectedItem.get());
+                    rules.add(Rule.RULE1);
                     continue;
                 }
                 // There is no item that matches RULE 1
                 // RULE 2
-//                tmp = this.items.stream()
-//                        .filter(NGKnapsack.lowWeight(lowerQ_weight))
-//                        .filter(NGKnapsack.profitIQR(lowerQ_profit, upperQ_profit))
-//                        .collect(Collectors.toList());
-//                selectedItem = tmp.stream().max(NGKnapsack::maxProfitWeight);
-//                if (selectedItem.isPresent()) {
-//                    packItem(selectedItem.get());
-//                    continue;
-//                }
+                Optional<NGItem> i1 = this.items.stream()
+                        .filter(NGKnapsack.lowWeight(lowerQ_weight))
+                        .max(NGKnapsack::maxProfitWeight);
+                Optional<NGItem> i2 = this.items.stream()
+                        .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
+                        .max(NGKnapsack::maxProfitWeight);
+                if (i1.isPresent() && i2.isPresent()) {
+                    System.out.println("EEENETERERE");
+                    this.items.stream().forEach(System.out::println);
+                    NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
+                    packItem(ii);
+                    System.out.println("SELECTION: " + ii);
+                    rules.add(Rule.RULE2);
+                    continue;
+                }
+                System.out.println("----");
 
+                System.out.println("CAN'T CHOOSE");
+                this.items.stream().forEach(System.out::println);
+
+                NGItem iToPack = this.items.stream().max(NGKnapsack::maxProfit).get();
                 // Default: MAX PROFIT
-                System.out.println("CANT FIND RULE");
-                packItem(this.items.stream().max(NGKnapsack::maxProfit).get());
+//                System.out.println("CANT FIND RULE");
+                packItem(iToPack);
+                rules.add(Rule.MAXPROFIT);
             }
         }
 
@@ -365,6 +434,10 @@ public class Run {
 
         public static int minWeight(NGItem i, NGItem j) {
             return Double.compare(i.getWeight(), j.getWeight()) * -1;
+        }
+
+        public static int maxWeight(NGItem i, NGItem j) {
+            return Double.compare(i.getWeight(), j.getWeight());
         }
 
         public static int maxProfitWeight(NGItem i, NGItem j) {
