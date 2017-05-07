@@ -331,6 +331,24 @@ public class Run {
                 double upperQ_profit = getProfitUpperQ();
                 double lowerQ_weight = getWeightLowerQ();
                 double lowerQ_profit = getProfitLowerQ();
+                
+                // There is no item that matches RULE 1
+                // RULE 2
+                Optional<NGItem> i1 = this.items.stream()
+                        .filter(NGKnapsack.lowWeight(lowerQ_weight))
+                        .max(NGKnapsack::maxProfitWeight);
+                Optional<NGItem> i2 = this.items.stream()
+                        .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
+                        .max(NGKnapsack::maxProfitWeight);
+                if (i1.isPresent() && i2.isPresent()) {
+                    System.out.println("EEENETERERE");
+                    this.items.stream().forEach(System.out::println);
+                    NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
+                    packItem(ii);
+                    System.out.println("SELECTION: " + ii);
+                    rules.add(Rule.RULE2);
+                    continue;
+                }
 
                 /*
                     RULE 1
@@ -355,23 +373,7 @@ public class Run {
                     rules.add(Rule.RULE1);
                     continue;
                 }
-                // There is no item that matches RULE 1
-                // RULE 2
-                Optional<NGItem> i1 = this.items.stream()
-                        .filter(NGKnapsack.lowWeight(lowerQ_weight))
-                        .max(NGKnapsack::maxProfitWeight);
-                Optional<NGItem> i2 = this.items.stream()
-                        .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
-                        .max(NGKnapsack::maxProfitWeight);
-                if (i1.isPresent() && i2.isPresent()) {
-                    System.out.println("EEENETERERE");
-                    this.items.stream().forEach(System.out::println);
-                    NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
-                    packItem(ii);
-                    System.out.println("SELECTION: " + ii);
-                    rules.add(Rule.RULE2);
-                    continue;
-                }
+                
                 System.out.println("----");
 
                 System.out.println("CAN'T CHOOSE");
