@@ -20,28 +20,36 @@ import java.util.stream.Collectors;
 
 public class Run {
     
+    public static int START = 0;
+    public static int END = 14;
+    
     public static void main(String[] args) {
+//        System.out.println("Training...");
+//        run(0, 14);
+        System.out.println("Testing...");
+        run(0, 100);
+    }
+    
+    public static void run(int start, int end) {
         String[] features, heuristics;
-        int START = 0;
-        int TEST = 18;
         KnapsackProblem problem;
         ConstructiveSolver solver;
         SampleHyperHeuristic hh;
 
         ArrayList<KnapsackProblem> problems = new ArrayList();
 
-        for (int index = START; index < TEST; index++) {
-            String instanceName = String.format("_20_%03d.kp", index);
+        for (int index = start; index < end; index++) {
+            String instanceName = String.format("_50_%03d.kp", index);
 
-            KnapsackProblem defProblem = new KnapsackProblem("../Instances/GA-DEFAULT" + instanceName);
-            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/GA-MAXPROFIT" + instanceName);
-            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/GA-MAXPROFITWEIGHT" + instanceName);
-            KnapsackProblem minProblem = new KnapsackProblem("../Instances/GA-MINWEIGHT" + instanceName);
+            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test II/UniUncor" + instanceName);
+//            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
+//            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
+//            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
 
             problems.add(defProblem);
-            problems.add(maxProblem);
-            problems.add(maxPWProblem);
-            problems.add(minProblem);
+//            problems.add(maxProblem);
+//            problems.add(maxPWProblem);
+//            problems.add(minProblem);
         }
         WinnerTable winners = new WinnerTable(problems.size());
 
@@ -99,7 +107,9 @@ public class Run {
             NGKnapsack kk = new NGKnapsack(my_items, defProblem.getCapacity());
             kk.solve();
             profit = kk.getTotalProfit();
-            results.put(Method.HYUUGA_HYPER, profit);
+            results.put(Method.HR_HYPER, profit);
+            String instanceName = defProblem.getId();
+            System.out.println(instanceName + ", " + profit);
 
             // Get Winner
             // If there is a tie, then all get incremented
@@ -121,7 +131,7 @@ public class Run {
         MAX_PROFIT_PER_WEIGHT_UNIT,
         MIN_WEIGHT,
         SIMPLE_HYPER,
-        HYUUGA_HYPER
+        HR_HYPER
     }
 
     public static class WinnerTable {
