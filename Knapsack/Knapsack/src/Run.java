@@ -27,7 +27,7 @@ public class Run {
 //        System.out.println("Training...");
 //        run(0, 14);
         System.out.println("Testing...");
-        run(0, 100);
+        run(100, 200);
     }
     
     public static void run(int start, int end) {
@@ -41,15 +41,15 @@ public class Run {
         for (int index = start; index < end; index++) {
             String instanceName = String.format("_50_%03d.kp", index);
 
-            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test II/UniUncor" + instanceName);
-//            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
-//            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
-//            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
+            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test I/GA-MaxDefault" + instanceName);
+            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
+            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
+            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
 
             problems.add(defProblem);
-//            problems.add(maxProblem);
-//            problems.add(maxPWProblem);
-//            problems.add(minProblem);
+            problems.add(maxProblem);
+            problems.add(maxPWProblem);
+            problems.add(minProblem);
         }
         WinnerTable winners = new WinnerTable(problems.size());
 
