@@ -1,0 +1,121 @@
+run:
+Testing...
+UniUncor_50_000.kp, 1216.0
+UniUncor_50_001.kp, 1060.0
+UniUncor_50_002.kp, 1132.0
+UniUncor_50_003.kp, 1465.0
+UniUncor_50_004.kp, 1197.0
+UniUncor_50_005.kp, 877.0
+UniUncor_50_006.kp, 1157.0
+UniUncor_50_007.kp, 1083.0
+UniUncor_50_008.kp, 1266.0
+UniUncor_50_009.kp, 982.0
+UniUncor_50_010.kp, 1259.0
+UniUncor_50_011.kp, 1092.0
+UniUncor_50_012.kp, 1289.0
+UniUncor_50_013.kp, 1053.0
+UniUncor_50_014.kp, 1203.0
+UniUncor_50_015.kp, 1181.0
+UniUncor_50_016.kp, 1305.0
+UniUncor_50_017.kp, 1067.0
+UniUncor_50_018.kp, 962.0
+UniUncor_50_019.kp, 1477.0
+UniUncor_50_020.kp, 1355.0
+UniUncor_50_021.kp, 1236.0
+UniUncor_50_022.kp, 1098.0
+UniUncor_50_023.kp, 1274.0
+UniUncor_50_024.kp, 1073.0
+UniUncor_50_025.kp, 1028.0
+UniUncor_50_026.kp, 1177.0
+UniUncor_50_027.kp, 1069.0
+UniUncor_50_028.kp, 1222.0
+UniUncor_50_029.kp, 1169.0
+UniUncor_50_030.kp, 981.0
+UniUncor_50_031.kp, 998.0
+UniUncor_50_032.kp, 1315.0
+UniUncor_50_033.kp, 1267.0
+UniUncor_50_034.kp, 1252.0
+UniUncor_50_035.kp, 1188.0
+UniUncor_50_036.kp, 960.0
+UniUncor_50_037.kp, 976.0
+UniUncor_50_038.kp, 1541.0
+UniUncor_50_039.kp, 1119.0
+UniUncor_50_040.kp, 1078.0
+UniUncor_50_041.kp, 1246.0
+UniUncor_50_042.kp, 1302.0
+UniUncor_50_043.kp, 1183.0
+UniUncor_50_044.kp, 1245.0
+UniUncor_50_045.kp, 996.0
+UniUncor_50_046.kp, 1377.0
+UniUncor_50_047.kp, 1038.0
+UniUncor_50_048.kp, 1070.0
+UniUncor_50_049.kp, 968.0
+UniUncor_50_050.kp, 933.0
+UniUncor_50_051.kp, 1241.0
+UniUncor_50_052.kp, 1128.0
+UniUncor_50_053.kp, 1212.0
+UniUncor_50_054.kp, 1202.0
+UniUncor_50_055.kp, 1048.0
+UniUncor_50_056.kp, 1131.0
+UniUncor_50_057.kp, 1055.0
+UniUncor_50_058.kp, 1216.0
+UniUncor_50_059.kp, 1090.0
+UniUncor_50_060.kp, 1298.0
+UniUncor_50_061.kp, 998.0
+UniUncor_50_062.kp, 1091.0
+UniUncor_50_063.kp, 1049.0
+UniUncor_50_064.kp, 1199.0
+UniUncor_50_065.kp, 1198.0
+UniUncor_50_066.kp, 975.0
+UniUncor_50_067.kp, 1218.0
+UniUncor_50_068.kp, 1131.0
+UniUncor_50_069.kp, 1243.0
+UniUncor_50_070.kp, 1070.0
+UniUncor_50_071.kp, 1602.0
+UniUncor_50_072.kp, 1086.0
+UniUncor_50_073.kp, 952.0
+UniUncor_50_074.kp, 984.0
+UniUncor_50_075.kp, 1165.0
+UniUncor_50_076.kp, 1136.0
+UniUncor_50_077.kp, 1305.0
+UniUncor_50_078.kp, 1041.0
+UniUncor_50_079.kp, 1285.0
+UniUncor_50_080.kp, 1044.0
+UniUncor_50_081.kp, 1078.0
+UniUncor_50_082.kp, 1173.0
+UniUncor_50_083.kp, 911.0
+UniUncor_50_084.kp, 1258.0
+UniUncor_50_085.kp, 1126.0
+UniUncor_50_086.kp, 1131.0
+UniUncor_50_087.kp, 1175.0
+UniUncor_50_088.kp, 976.0
+UniUncor_50_089.kp, 957.0
+UniUncor_50_090.kp, 1091.0
+UniUncor_50_091.kp, 1459.0
+UniUncor_50_092.kp, 1044.0
+UniUncor_50_093.kp, 1224.0
+UniUncor_50_094.kp, 884.0
+UniUncor_50_095.kp, 1163.0
+UniUncor_50_096.kp, 1114.0
+UniUncor_50_097.kp, 1094.0
+UniUncor_50_098.kp, 1117.0
+UniUncor_50_099.kp, 1237.0
+=============================================
+              TABLE OF RESULTS
+=============================================
+                  DEFAULT: (00/100) 00.000%
+               MAX_PROFIT: (00/100) 00.000%
+MAX_PROFIT_PER_WEIGHT_UNIT: (86/100) 86.000%
+               MIN_WEIGHT: (00/100) 00.000%
+             SIMPLE_HYPER: (00/100) 00.000%
+                 HR_HYPER: (40/100) 40.000%
+=============================================
+                  RULES USED
+=============================================
+    REMOVE: (358/1951) 18.350%
+ MAXPROFIT: (074/1951) 03.793%
+     RULE2: (114/1951) 05.843%
+     RULE1: (1405/1951) 72.014%
+=============================================
+
+BUILD SUCCESSFUL (total time: 0 seconds)
