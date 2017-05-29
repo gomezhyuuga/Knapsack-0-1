@@ -348,11 +348,12 @@ public class Run {
                 Optional<NGItem> i1 = this.items.stream()
                         .filter(NGKnapsack.lowWeight(lowerQ_weight))
                         .max(NGKnapsack::maxProfit);
+                
                 Optional<NGItem> i2 = this.items.stream()
                         .filter(NGKnapsack.weightIQR(lowerQ_weight, upperQ_weight))
                         .max(NGKnapsack::maxProfitWeight);
                 if (i1.isPresent() && i2.isPresent()) {
-                    NGItem ii = i1.get().getProfit() > i2.get().getProfit() ? i1.get() : i2.get();
+                    NGItem ii = i1.get().getProfit() >= i2.get().getProfit() ? i1.get() : i2.get();
                     packItem(ii, Rule.RULE1);
                     continue;
                 }
