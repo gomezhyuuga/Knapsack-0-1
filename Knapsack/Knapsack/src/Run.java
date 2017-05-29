@@ -170,13 +170,13 @@ public class Run {
         @Override
         public String toString() {
             StringBuilder s = new StringBuilder();
-            String ruler = String.join("", Collections.nCopies(45, "=")) + "\n";
+            String ruler = String.join("", Collections.nCopies(50, "=")) + "\n";
             DecimalFormat decim = new DecimalFormat("00.000");
             s.append(ruler);
             s.append(String.format("%30s\n", "TABLE OF RESULTS"));
             s.append(ruler);
             for (Method m : Method.values()) {
-                s.append(String.format("%45s", String.format("%s: (%02d/%d) %s%% \n",
+                s.append(String.format("%50s", String.format("%s: (%03d/%03d) %s%% \n",
                         m.toString(),
                         getWins(m),
                         this.n,
@@ -193,7 +193,7 @@ public class Run {
                 String key = entry.getKey();
                 List<NGKnapsack.Rule> value = entry.getValue();
                 int times = value.size();
-                s.append(String.format("%10s: (%03d/%d) %s%%\n",
+                s.append(String.format("%10s: (%04d/%d) %s%%\n",
                         key,
                         times,
                         size,
