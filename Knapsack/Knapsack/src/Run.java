@@ -27,7 +27,7 @@ public class Run {
 //        System.out.println("Training...");
 //        run(0, 14);
         System.out.println("Testing...");
-        run(100, 200);
+        run(0, 100);
     }
     
     public static void run(int start, int end) {
@@ -41,15 +41,17 @@ public class Run {
         for (int index = start; index < end; index++) {
             String instanceName = String.format("_50_%03d.kp", index);
 
-            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test I/GA-MaxDefault" + instanceName);
-            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
-            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
-            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
+//            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test I/GA-MaxDefault" + instanceName);
+            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test II/UniUncor" + instanceName);
+//            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
+            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test II/UniCor" + instanceName);
+//            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
+//            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
 
             problems.add(defProblem);
             problems.add(maxProblem);
-            problems.add(maxPWProblem);
-            problems.add(minProblem);
+//            problems.add(maxPWProblem);
+//            problems.add(minProblem);
         }
         WinnerTable winners = new WinnerTable(problems.size());
 
@@ -109,7 +111,7 @@ public class Run {
             profit = kk.getTotalProfit();
             results.put(Method.HR_HYPER, profit);
             String instanceName = defProblem.getId();
-            System.out.println(instanceName + ", " + profit);
+            System.out.println(instanceName + "\t" + profit);
 
             // Get Winner
             // If there is a tie, then all get incremented
@@ -334,15 +336,15 @@ public class Run {
                 }
 
                 Optional<NGItem> selectedItem;
-//                double mean_weight = getWeightMean();
+                double mean_weight = getWeightMean();
                 double mean_profit = getProfitMean();
-//                double median_profit = getProfitMedian();
-//                double std_weight = getWeightSTD();
+                double median_profit = getProfitMedian();
+                double std_weight = getWeightSTD();
                 double std_profit = getProfitSTD();
                 double upperQ_weight = getWeightUpperQ();
-//                double upperQ_profit = getProfitUpperQ();
+                double upperQ_profit = getProfitUpperQ();
                 double lowerQ_weight = getWeightLowerQ();
-//                double lowerQ_profit = getProfitLowerQ();
+                double lowerQ_profit = getProfitLowerQ();
                 
                 // RULE 2
                 Optional<NGItem> i1 = this.items.stream()
