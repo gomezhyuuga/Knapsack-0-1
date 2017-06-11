@@ -44,18 +44,23 @@ public class Run {
 //            KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test I/GA-MaxDefault" + instanceName);
             KnapsackProblem defProblem = new KnapsackProblem("../Instances/Test II/UniUncor" + instanceName);
 //            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfit" + instanceName);
-            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test II/UniCor" + instanceName);
+//            KnapsackProblem maxProblem = new KnapsackProblem("../Instances/Test II/UniCor" + instanceName);
 //            KnapsackProblem maxPWProblem = new KnapsackProblem("../Instances/Test I/GA-MaxProfitPerWeight" + instanceName);
 //            KnapsackProblem minProblem = new KnapsackProblem("../Instances/Test I/GA-MinWeight" + instanceName);
 
             problems.add(defProblem);
-            problems.add(maxProblem);
+//            problems.add(maxProblem);
 //            problems.add(maxPWProblem);
 //            problems.add(minProblem);
         }
         WinnerTable winners = new WinnerTable(problems.size());
 
         List<NGKnapsack.Rule> rules = new ArrayList<>();
+        System.out.printf("Instance Name    \t DP.    \t %s \t %s \t MAX_PpW \t %s \t %s\n",
+                Method.DEFAULT,
+                Method.MAX_PROFIT,
+                Method.MIN_WEIGHT,
+                Method.HR_HYPER);
 
         for (KnapsackProblem p : problems) {
             Map<Method, Double> results = new HashMap<>();
@@ -111,8 +116,14 @@ public class Run {
             profit = kk.getTotalProfit();
             results.put(Method.HR_HYPER, profit);
             String instanceName = defProblem.getId();
-            System.out.println(instanceName + "\t" + profit);
-
+            System.out.printf("%s \t %.2f \t %.2f \t %.2f \t %.2f \t %.2f \t %.2f\n",
+                    instanceName,
+                    new ConstructiveSolver(defProblem).solve().getProfit(),
+                    results.get(Method.DEFAULT),
+                    results.get(Method.MAX_PROFIT),
+                    results.get(Method.MAX_PROFIT_PER_WEIGHT_UNIT),
+                    results.get(Method.MIN_WEIGHT),
+                    results.get(Method.HR_HYPER));
             // Get Winner
             // If there is a tie, then all get incremented
             Optional<Double> winner = results.values().stream().max(Double::compare);
